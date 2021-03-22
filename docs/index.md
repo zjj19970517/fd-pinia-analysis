@@ -25,9 +25,12 @@ footer: MIT Licensed | Copyright © 2019-present Eduardo San Martin Morote
 
 <ThemeToggle/>
 
+<PiniaLogo/>
+
 <HomeSponsors />
 
 <script setup>
 import HomeSponsors from './.vitepress/components/HomeSponsors.vue'
 import ThemeToggle from './.vitepress/components/ThemeToggle.vue'
+import PiniaLogo from './.vitepress/components/PiniaLogo.vue'
 </script>
