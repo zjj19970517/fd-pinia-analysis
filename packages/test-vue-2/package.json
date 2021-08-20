@@ -5,6 +5,14 @@
   "version": "0.0.0",
   "scripts": {},
   "dependencies": {
-    "pinia": "^2.0.0-0"
+    "pinia": "^2.0.0-0",
+    "vue-demi": "^0.11.3"
+  },
+  "devDependencies": {
+    "@vue/composition-api": "^1.1.1",
+    "@vue/test-utils2": "npm:@vue/test-utils@1",
+    "vue-server-renderer": "^2.6.14",
+    "vue-template-compiler": "^2.6.14",
+    "vue2": "npm:vue@2"
   }
 }

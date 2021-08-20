@@ -1,7 +1,13 @@
-import { computed, ref, ToRefs } from 'vue'
+import { computed, isVue2, ref, ToRefs } from 'vue-demi'
 import { createPinia, defineStore, setActivePinia, storeToRefs } from '../src'
 
 describe('storeToRefs', () => {
+  if (isVue2) {
+    // https://github.com/vuejs/composition-api/pull/795
+    it('skips', () => {})
+    return
+  }
+
   beforeEach(() => {
     setActivePinia(createPinia())
   })

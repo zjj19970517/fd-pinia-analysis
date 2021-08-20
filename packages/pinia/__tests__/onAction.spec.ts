@@ -1,6 +1,6 @@
 import { createPinia, defineStore, setActivePinia } from '../src'
 import { mount } from '@vue/test-utils'
-import { nextTick } from 'vue'
+import { isVue3, nextTick } from 'vue-demi'
 
 describe('Subscriptions', () => {
   const useStore = () => {
@@ -164,44 +164,46 @@ describe('Subscriptions', () => {
       expect(spy2).toHaveBeenCalledTimes(1)
     })
 
-    it('removes on unmount', async () => {
-      const pinia = createPinia()
-      const spy1 = jest.fn()
-      const spy2 = jest.fn()
+    if (isVue3) {
+      it('removes on unmount', async () => {
+        const pinia = createPinia()
+        const spy1 = jest.fn()
+        const spy2 = jest.fn()
 
-      const wrapper = mount(
-        {
-          setup() {
-            const s1 = useStore()
-            s1.$onAction(spy1)
+        const wrapper = mount(
+          {
+            setup() {
+              const s1 = useStore()
+              s1.$onAction(spy1)
+            },
+            template: `<p/>`,
           },
-          template: `<p/>`,
-        },
-        { global: { plugins: [pinia] } }
-      )
+          { global: { plugins: [pinia] } }
+        )
 
-      const s1 = useStore()
-      const s2 = useStore()
+        const s1 = useStore()
+        const s2 = useStore()
 
-      s2.$onAction(spy2)
+        s2.$onAction(spy2)
 
-      expect(spy1).toHaveBeenCalledTimes(0)
-      expect(spy2).toHaveBeenCalledTimes(0)
+        expect(spy1).toHaveBeenCalledTimes(0)
+        expect(spy2).toHaveBeenCalledTimes(0)
 
-      s1.changeName('Cleiton')
+        s1.changeName('Cleiton')
 
-      expect(spy2).toHaveBeenCalledTimes(1)
-      expect(spy1).toHaveBeenCalledTimes(1)
+        expect(spy2).toHaveBeenCalledTimes(1)
+        expect(spy1).toHaveBeenCalledTimes(1)
 
-      s1.changeName('other')
-      expect(spy1).toHaveBeenCalledTimes(2)
-      expect(spy2).toHaveBeenCalledTimes(2)
+        s1.changeName('other')
+        expect(spy1).toHaveBeenCalledTimes(2)
+        expect(spy2).toHaveBeenCalledTimes(2)
 
-      await wrapper.unmount()
+        await wrapper.unmount()
 
-      s1.changeName('again')
-      expect(spy1).toHaveBeenCalledTimes(2)
-      expect(spy2).toHaveBeenCalledTimes(3)
-    })
+        s1.changeName('again')
+        expect(spy1).toHaveBeenCalledTimes(2)
+        expect(spy2).toHaveBeenCalledTimes(3)
+      })
+    }
   })
 })

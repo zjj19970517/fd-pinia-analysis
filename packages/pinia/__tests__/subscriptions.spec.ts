@@ -1,7 +1,13 @@
+import { isVue2 } from 'vue-demi'
 import { createPinia, defineStore, MutationType, setActivePinia } from '../src'
-import { mount } from '@vue/test-utils'
+import { mount } from './mount'
 
 describe('Subscriptions', () => {
+  if (isVue2) {
+    it('skips', () => {})
+    return
+  }
+
   const useStore = () => {
     // create a new store
     setActivePinia(createPinia())
@@ -103,16 +109,13 @@ describe('Subscriptions', () => {
       const spy1 = jest.fn()
       const spy2 = jest.fn()
 
-      const wrapper = mount(
-        {
-          setup() {
-            const s1 = useStore()
-            s1.$subscribe(spy1, { flush: 'sync' })
-          },
-          template: `<p/>`,
+      const wrapper = mount(pinia, {
+        setup() {
+          const s1 = useStore()
+          s1.$subscribe(spy1, { flush: 'sync' })
         },
-        { global: { plugins: [pinia] } }
-      )
+        template: `<p/>`,
+      })
 
       const s1 = useStore()
       const s2 = useStore()

@@ -1,4 +1,4 @@
-import { reactive, ref } from 'vue'
+import { reactive, ref } from 'vue-demi'
 import { createPinia, defineStore, Pinia, setActivePinia } from '../src'
 
 describe('store.$patch', () => {

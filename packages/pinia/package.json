@@ -58,8 +58,7 @@
     "@vue/compiler-sfc": "^3.2.2",
     "@vue/server-renderer": "^3.2.2",
     "@vue/test-utils": "^2.0.0-rc.12",
-    "vue": "^3.2.2",
-    "vue2": "npm:vue@2"
+    "vue": "^3.2.2"
   },
   "dependencies": {
     "@vue/devtools-api": "^6.0.0-beta.15",

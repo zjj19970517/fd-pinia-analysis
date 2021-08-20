@@ -1,5 +1,5 @@
 import { createPinia, defineStore, Pinia, setActivePinia } from '../src'
-import { computed, nextTick, ref, watch } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue-demi'
 
 describe('State', () => {
   const useStore = (pinia?: Pinia) => {

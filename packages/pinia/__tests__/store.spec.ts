@@ -1,24 +1,32 @@
-import { createPinia, defineStore, setActivePinia, Pinia } from '../src'
+import { createPinia, defineStore, setActivePinia } from '../src'
 import { mount } from '@vue/test-utils'
-import { defineComponent, getCurrentInstance, nextTick, watch } from 'vue'
+import {
+  defineComponent,
+  getCurrentInstance,
+  isVue2,
+  nextTick,
+  watch,
+} from 'vue-demi'
 
 describe('Store', () => {
-  let pinia: Pinia
-  const useStore = () => {
-    // create a new store
-    pinia = createPinia()
-    setActivePinia(pinia)
-    return defineStore({
-      id: 'main',
-      state: () => ({
-        a: true,
-        nested: {
-          foo: 'foo',
-          a: { b: 'string' },
-        },
-      }),
-    })()
+  if (isVue2) {
+    it('skips', () => {})
+    return
   }
+  beforeEach(() => {
+    setActivePinia(createPinia())
+  })
+
+  const useStore = defineStore({
+    id: 'main',
+    state: () => ({
+      a: true,
+      nested: {
+        foo: 'foo',
+        a: { b: 'string' },
+      },
+    }),
+  })
 
   it('reuses a store', () => {
     setActivePinia(createPinia())
@@ -162,7 +170,7 @@ describe('Store', () => {
 
   it('do not share the state between same id store', () => {
     const store = useStore()
-    const store2 = useStore()
+    const store2 = useStore(createPinia())
     expect(store.$state).not.toBe(store2.$state)
     store.$state.nested.a.b = 'hey'
     expect(store2.$state.nested.a.b).toBe('string')

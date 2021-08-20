@@ -1,5 +1,5 @@
 import { createPinia, defineStore, setActivePinia } from '../src'
-import { computed, nextTick, ref, watch } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue-demi'
 
 function expectType<T>(value: T): void {}
 

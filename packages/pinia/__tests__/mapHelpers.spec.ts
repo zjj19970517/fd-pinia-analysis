@@ -9,10 +9,15 @@ import {
   setMapStoreSuffix,
 } from '../src'
 import { mount } from '@vue/test-utils'
-import { nextTick, defineComponent } from 'vue'
+import { nextTick, defineComponent, isVue2 } from 'vue-demi'
 import { mockWarn } from 'jest-mock-warn'
 
 describe('Map Helpers', () => {
+  if (isVue2) {
+    it('skips', () => {})
+    return
+  }
+
   const useStore = defineStore({
     id: 'main',
     state: () => ({

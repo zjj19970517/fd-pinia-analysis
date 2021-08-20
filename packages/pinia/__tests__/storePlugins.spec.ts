@@ -1,6 +1,6 @@
 import { createPinia, defineStore } from '../src'
-import { mount } from '@vue/test-utils'
-import { App, computed, ref, toRef, watch } from 'vue'
+import { mount } from './mount'
+import { App, computed, isVue2, ref, toRef, watch } from 'vue-demi'
 
 declare module '../src' {
   export interface PiniaCustomProperties<Id> {
@@ -22,6 +22,11 @@ declare module '../src' {
 }
 
 describe('store plugins', () => {
+  if (isVue2) {
+    it('skips', () => {})
+    return
+  }
+
   const useStore = defineStore({
     id: 'test',
 
@@ -39,7 +44,7 @@ describe('store plugins', () => {
   it('adds properties to stores', () => {
     const pinia = createPinia()
 
-    mount({ template: 'none' }, { global: { plugins: [pinia] } })
+    mount(pinia, { template: '<p>none</p>' })
 
     // must call use after installing the plugin
     pinia.use(({ app, store }) => {
@@ -69,7 +74,7 @@ describe('store plugins', () => {
     pinia.use(() => ({ pluginN: 1 }))
     pinia.use(({ app }) => ({ uid: app._uid }))
 
-    mount({ template: 'none' }, { global: { plugins: [pinia] } })
+    mount(pinia, { template: '<p/>' })
 
     pinia.use((app) => ({ hasApp: !!app }))
 
@@ -88,7 +93,7 @@ describe('store plugins', () => {
       return { pluginN: 20 }
     })
 
-    mount({ template: 'none' }, { global: { plugins: [pinia] } })
+    mount(pinia, { template: '<p/>' })
 
     const store = useStore(pinia)
 
@@ -103,7 +108,7 @@ describe('store plugins', () => {
       return { pluginN: 20 }
     })
 
-    mount({ template: 'none' }, { global: { plugins: [pinia] } })
+    mount(pinia, { template: '<p/>' })
 
     const store = useStore(pinia)
     expect(store.doubleN).toBe(40)
@@ -115,7 +120,7 @@ describe('store plugins', () => {
     // must call use after installing the plugin
     pinia.use(() => ({ globalA: 'a' })).use(() => ({ globalB: 'b' }))
 
-    mount({ template: 'none' }, { global: { plugins: [pinia] } })
+    mount(pinia, { template: '<p>none</p>' })
 
     const store = useStore(pinia)
     expect(store.globalA).toBe('a')
@@ -125,7 +130,7 @@ describe('store plugins', () => {
   it('shares the same ref among stores', () => {
     const pinia = createPinia()
 
-    mount({ template: 'none' }, { global: { plugins: [pinia] } })
+    mount(pinia, { template: '<p>none</p>' })
 
     // must call use after installing the plugin
     pinia.use(({ app, store }) => {
@@ -176,7 +181,7 @@ describe('store plugins', () => {
     }
     const useStore = defineStore(options)
     const pinia = createPinia()
-    mount({ template: 'none' }, { global: { plugins: [pinia] } })
+    mount(pinia, { template: '<p>none</p>' })
 
     pinia.use((context) => {
       expect(context.options).toEqual(options)
@@ -197,7 +202,7 @@ describe('store plugins', () => {
       return { n, increment, a }
     })
     const pinia = createPinia()
-    mount({ template: 'none' }, { global: { plugins: [pinia] } })
+    mount(pinia, { template: '<p>none</p>' })
 
     pinia.use((context) => {
       expect(context.options).toEqual({
@@ -226,16 +231,13 @@ describe('store plugins', () => {
       state: () => ({ n: 1 }),
     })
 
-    mount(
-      {
-        template: 'none',
-        setup() {
-          // create it inside of the component
-          useStore()
-        },
+    mount(pinia, {
+      template: '<p>none</p>',
+      setup() {
+        // create it inside of the component
+        useStore()
       },
-      { global: { plugins: [pinia] } }
-    ).unmount()
+    }).unmount()
 
     const store = useStore(pinia)
 

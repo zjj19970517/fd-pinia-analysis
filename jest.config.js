@@ -3,6 +3,7 @@ module.exports = {
   collectCoverage: true,
   coverageDirectory: 'coverage',
   coverageReporters: ['html', 'lcov', 'text'],
+  setupFilesAfterEnv: ['<rootDir>/packages/pinia/__tests__/setup.ts'],
   collectCoverageFrom: [
     'packages/pinia/src/**/*.ts',
     'packages/testing/src/**/*.ts',

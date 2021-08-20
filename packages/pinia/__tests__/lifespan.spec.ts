@@ -14,8 +14,14 @@ import {
   onMounted,
   getCurrentInstance,
 } from 'vue'
+import { isVue2 } from 'vue-demi'
 
 describe('Store Lifespan', () => {
+  if (isVue2) {
+    it('skips', () => {})
+    return
+  }
+
   function defineMyStore() {
     return defineStore({
       id: 'main',

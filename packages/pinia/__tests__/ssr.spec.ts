@@ -6,8 +6,14 @@ import { Component, createSSRApp, inject } from 'vue'
 import { renderToString, ssrInterpolate } from '@vue/server-renderer'
 import { useUserStore } from './pinia/stores/user'
 import { useCartStore } from './pinia/stores/cart'
+import { isVue2 } from 'vue-demi'
 
 describe('SSR', () => {
+  if (isVue2) {
+    it('skips', () => {})
+    return
+  }
+
   const App = {
     ssrRender(ctx: any, push: any, _parent: any) {
       push(

@@ -1,9 +1,14 @@
 import { createTestingPinia, TestingOptions } from './testing'
 import { createPinia, defineStore } from 'pinia'
 import { mount } from '@vue/test-utils'
-import { defineComponent } from 'vue'
+import { defineComponent, isVue2 } from 'vue-demi'
 
 describe('Testing', () => {
+  if (isVue2) {
+    it('skips', () => {})
+    return
+  }
+
   const useCounter = defineStore('counter', {
     state: () => ({ n: 0 }),
     actions: {
