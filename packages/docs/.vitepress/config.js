@@ -1,5 +1,14 @@
 // @ts-check
 
+// @ts-expect-error
+import base from '@vue/theme/config'
+
+const themeConfig = async () => {
+  const config = await base()
+  // config.markdown.highlight = await highlight()
+  return config
+}
+
 const META_URL = 'https://pinia.vuejs.org'
 const META_TITLE = 'Pinia 🍍'
 const META_DESCRIPTION =
@@ -31,6 +40,8 @@ const darkModeFix = require('fs').readFileSync(
  * @type {import('vitepress').UserConfig}
  */
 module.exports = {
+  extends: themeConfig,
+
   title: 'Pinia',
   lang: 'en-US',
   description: 'The Vue Store that you will enjoy using',
