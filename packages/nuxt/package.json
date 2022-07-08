@@ -1,5 +1,16 @@
 {
   "name": "@pinia/nuxt",
+  "sideEffects": false,
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/module.mjs",
+      "require": "./dist/module.cjs"
+    },
+    "./dist/*": "./dist/*"
+  },
+  "main": "./dist/module.cjs",
+  "types": "./dist/types.d.ts",
   "version": "0.1.9",
   "description": "Nuxt Module for pinia",
   "keywords": [
@@ -23,33 +34,26 @@
     "name": "Eduardo San Martin Morote",
     "email": "posva13@gmail.com"
   },
-  "sideEffects": false,
-  "exports": {
-    ".": {
-      "import": "./dist/module.mjs",
-      "require": "./module.cjs"
-    },
-    "./dist/*": "./dist/*"
-  },
-  "main": "./module.cjs",
-  "types": "./dist/module.d.ts",
   "files": [
-    "module.cjs",
-    "dist/*.js",
-    "dist/*.mjs",
-    "dist/*.d.ts"
+    "dist"
   ],
   "scripts": {
-    "build": "unbuild",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s --commit-path . -l @pinia/nuxt -r 1"
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s --commit-path . -l @pinia/nuxt -r 1",
+    "build": "nuxt-module-build",
+    "dev": "nuxi dev playground",
+    "dev:build": "nuxi build playground",
+    "dev:prepare": "nuxt-module-build --stub && nuxi prepare playground"
   },
   "dependencies": {
+    "@nuxt/kit": "3.0.0-rc.4",
     "vue-demi": "*"
   },
   "devDependencies": {
+    "@nuxt/module-builder": "latest",
     "@nuxt/types": "^2.15.8",
-    "pinia": "^2.0.0",
-    "unbuild": "^0.7.4"
+    "jiti": "^1.14.0",
+    "nuxt": "^3.0.0-rc.4",
+    "pinia": "^2.0.0"
   },
   "peerDependencies": {
     "pinia": ">=2.0.14"
