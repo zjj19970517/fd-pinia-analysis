@@ -23,10 +23,13 @@ export function createPinia(): Pinia {
     install(app: App) {
       // this allows calling useStore() outside of a component setup after
       // installing pinia's plugin
+      // 设置激活的 pinia 实例对象
       setActivePinia(pinia)
       if (!isVue2) {
         pinia._a = app
+        // 向下注入 pinia 实例
         app.provide(piniaSymbol, pinia)
+        // $pinia 
         app.config.globalProperties.$pinia = pinia
         /* istanbul ignore else */
         if (USE_DEVTOOLS) {
@@ -51,7 +54,7 @@ export function createPinia(): Pinia {
     // @ts-expect-error
     _a: null,
     _e: scope,
-    _s: new Map<string, StoreGeneric>(),
+    _s: new Map<string, StoreGeneric>(), // 这里会集中管理所有的 store
     state,
   })
 

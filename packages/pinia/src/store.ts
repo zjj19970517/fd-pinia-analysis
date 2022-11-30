@@ -159,7 +159,7 @@ function createOptionsStore<
     const localState =
       __DEV__ && hot
         ? // use ref() to unwrap refs inside state TODO: check if this is still necessary
-          toRefs(ref(state ? state() : {}).value)
+        toRefs(ref(state ? state() : {}).value)
         : toRefs(pinia.state.value[id])
 
     return assign(
@@ -333,10 +333,10 @@ function createSetupStore<
   /* istanbul ignore next */
   const $reset = __DEV__
     ? () => {
-        throw new Error(
-          `🍍: Store "${$id}" is built using the setup syntax and does not implement $reset().`
-        )
-      }
+      throw new Error(
+        `🍍: Store "${$id}" is built using the setup syntax and does not implement $reset().`
+      )
+    }
     : noop
 
   function $dispose() {
@@ -457,14 +457,14 @@ function createSetupStore<
   const store: Store<Id, S, G, A> = reactive(
     __DEV__ || USE_DEVTOOLS
       ? assign(
-          {
-            _hmrPayload,
-            _customProperties: markRaw(new Set<string>()), // devtools custom properties
-          },
-          partialStore
-          // must be added later
-          // setupStore
-        )
+        {
+          _hmrPayload,
+          _customProperties: markRaw(new Set<string>()), // devtools custom properties
+        },
+        partialStore
+        // must be added later
+        // setupStore
+      )
       : partialStore
   ) as unknown as Store<Id, S, G, A>
 
@@ -539,7 +539,7 @@ function createSetupStore<
       if (isComputed(prop)) {
         _hmrPayload.getters[key] = isOptionsStore
           ? // @ts-expect-error
-            options.getters[key]
+          options.getters[key]
           : prop
         if (IS_CLIENT) {
           const getters: string[] =
@@ -633,10 +633,10 @@ function createSetupStore<
         const getter: _Method = newStore._hmrPayload.getters[getterName]
         const getterValue = isOptionsStore
           ? // special handling of options api
-            computed(() => {
-              setActivePinia(pinia)
-              return getter.call(store, store)
-            })
+          computed(() => {
+            setActivePinia(pinia)
+            return getter.call(store, store)
+          })
           : getter
 
         set(store, getterName, getterValue)
@@ -671,15 +671,15 @@ function createSetupStore<
       enumerable: false,
     }
 
-    // avoid listing internal properties in devtools
-    ;(['_p', '_hmrPayload', '_getters', '_customProperties'] as const).forEach(
-      (p) => {
-        Object.defineProperty(store, p, {
-          value: store[p],
-          ...nonEnumerable,
-        })
-      }
-    )
+      // avoid listing internal properties in devtools
+      ; (['_p', '_hmrPayload', '_getters', '_customProperties'] as const).forEach(
+        (p) => {
+          Object.defineProperty(store, p, {
+            value: store[p],
+            ...nonEnumerable,
+          })
+        }
+      )
   }
 
   /* istanbul ignore if */
@@ -728,8 +728,8 @@ function createSetupStore<
   ) {
     console.warn(
       `[🍍]: The "state" must be a plain object. It cannot be\n` +
-        `\tstate: () => new MyClass()\n` +
-        `Found in store "${store.$id}".`
+      `\tstate: () => new MyClass()\n` +
+      `Found in store "${store.$id}".`
     )
   }
 
@@ -739,7 +739,7 @@ function createSetupStore<
     isOptionsStore &&
     (options as DefineStoreOptions<Id, S, G, A>).hydrate
   ) {
-    ;(options as DefineStoreOptions<Id, S, G, A>).hydrate!(
+    ; (options as DefineStoreOptions<Id, S, G, A>).hydrate!(
       store.$state,
       initialState
     )
@@ -858,17 +858,17 @@ export function defineStore(
   let id: string
   let options:
     | DefineStoreOptions<
-        string,
-        StateTree,
-        _GettersTree<StateTree>,
-        _ActionsTree
-      >
+      string,
+      StateTree,
+      _GettersTree<StateTree>,
+      _ActionsTree
+    >
     | DefineSetupStoreOptions<
-        string,
-        StateTree,
-        _GettersTree<StateTree>,
-        _ActionsTree
-      >
+      string,
+      StateTree,
+      _GettersTree<StateTree>,
+      _ActionsTree
+    >
 
   const isSetupStore = typeof setup === 'function'
   if (typeof idOrOptions === 'string') {
@@ -880,28 +880,37 @@ export function defineStore(
     id = idOrOptions.id
   }
 
+  // defineStore 之后
+  // 返回一个函数
   function useStore(pinia?: Pinia | null, hot?: StoreGeneric): StoreGeneric {
+    // 当前组件实例
     const currentInstance = getCurrentInstance()
+
+    // 获取全局注入的 pinia 实例
     pinia =
       // in test mode, ignore the argument provided as we can always retrieve a
       // pinia instance with getActivePinia()
       (__TEST__ && activePinia && activePinia._testing ? null : pinia) ||
       (currentInstance && inject(piniaSymbol))
+
+
     if (pinia) setActivePinia(pinia)
 
     if (__DEV__ && !activePinia) {
       throw new Error(
         `[🍍]: getActivePinia was called with no active Pinia. Did you forget to install pinia?\n` +
-          `\tconst pinia = createPinia()\n` +
-          `\tapp.use(pinia)\n` +
-          `This will fail in production.`
+        `\tconst pinia = createPinia()\n` +
+        `\tapp.use(pinia)\n` +
+        `This will fail in production.`
       )
     }
 
     pinia = activePinia!
 
+    // pinia._s 中是否已经存储有该 Store
     if (!pinia._s.has(id)) {
-      // creating the store registers it in `pinia._s`
+      // 创建的 Store 会存储在 pinia._s 中
+      // 这就是 Pinia 单独创建，统一管理 的特点所在
       if (isSetupStore) {
         createSetupStore(id, setup, options, pinia)
       } else {
@@ -915,36 +924,9 @@ export function defineStore(
       }
     }
 
+    // 将创建的 Store 返回
     const store: StoreGeneric = pinia._s.get(id)!
 
-    if (__DEV__ && hot) {
-      const hotId = '__hot:' + id
-      const newStore = isSetupStore
-        ? createSetupStore(hotId, setup, options, pinia, true)
-        : createOptionsStore(hotId, assign({}, options) as any, pinia, true)
-
-      hot._hotUpdate(newStore)
-
-      // cleanup the state properties and the store from the cache
-      delete pinia.state.value[hotId]
-      pinia._s.delete(hotId)
-    }
-
-    // save stores in instances to access them devtools
-    if (
-      __DEV__ &&
-      IS_CLIENT &&
-      currentInstance &&
-      currentInstance.proxy &&
-      // avoid adding stores that are just built for hot module replacement
-      !hot
-    ) {
-      const vm = currentInstance.proxy
-      const cache = '_pStores' in vm ? vm._pStores! : (vm._pStores = {})
-      cache[id] = store
-    }
-
-    // StoreGeneric cannot be casted towards Store
     return store as any
   }
 
